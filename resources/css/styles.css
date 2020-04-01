@@ -1,0 +1,46 @@
+    	.totales > button{
+    		border-radius: 5px;
+
+    	}
+    	#total_confirmados > button{
+			background: #FFF3D6;
+			border: 2px solid #FFE7AD;
+    	}
+    	#total_confirmados > button > span{
+    		font-size: 30px;
+    		font-weight: bold;
+			color: orange;
+    	}
+    	#total_confirmados > button > label{
+			color: #cf8d2e;
+    	}
+
+    	#total_muertes > button{
+			background: #FFE0E6;
+			border: 2px solid #FFABBD;
+    	}
+    	#total_muertes > button > span{
+    		font-size: 30px;
+    		font-weight: bold;
+			color: tomato;
+    	}
+    	#total_muertes > button > label{
+			color: #ff4c4c;
+    	}
+
+    	#total_recuperados > button{
+			background: #DBF2F2;
+			border: 2px solid #50D8D8;
+    	}
+    	#total_recuperados > button > span{
+			color: #50D8D8;
+			font-size: 30px;
+    		font-weight: bold;
+    	}
+    	#total_recuperados > button > label{
+			color: #50D8D8;
+    	}
+
+    	#fecha{
+    		color: #0099e5;
+    	}

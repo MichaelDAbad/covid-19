@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script type="text/javascript" src="resources/js/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+
+	<!--bootstrap-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" type="text/css" href="resources/css/styles.css">
+</head>
+<body>
+<div class="container mt-3" style="border: 1px solid #CDEBFF; border-radius: 10px;">
+	<select name="paises" id="paises">
+		<option value="Peru" selected="">PERU</option>
+		<option value="Chile">CHILE</option>
+		<option value="Argentina">ARGENTINA</option>
+		<option value="Ecuador">ECUADOR</option>
+		<option value="Colombia">COLOMBIA</option>
+		<option value="Brazil">BRAZIL</option>
+		<option value="Bolivia">BOLIVIA</option>
+		<option value="Paraguay">PARAGUAY</option>
+		<option value="Uruguay">URUGUAY</option>
+	</select>
+	<div class="h4 text-info text-center">
+		COVID-19 EN EL MUNDO BASADO EN CASOS CONFIRMADOS<br>
+		<span id="fecha"> </span>
+	</div>
+	<div class="row mt-4">
+		<div class="col-md-6 col-sm-12" >
+			<h5 class="text-center" id="_pais_">PERU</h5>
+			<div class="row mb-3">
+			  <div class="col-4 totales" id="total_confirmados">
+			  	<button>
+					<span>0</span>
+					<label>Total confirmados</label>
+				</button>
+			  </div>
+			  <div class="col-4 totales text-center" id="total_muertes">
+			  	<button>
+					<span>0</span>
+					<label>&nbsp;Total Muertes&nbsp;&nbsp;</label>
+				</button>
+			  </div>
+			  <div class="col-4 totales" id="total_recuperados">
+			  	<button>
+					<span>0</span>
+					<label>Total recuperados</label>
+				</button>
+			  </div>
+			  <!-- <div class="col-3 col-md-3">
+			  	<button style="background: #DBF2F2; border-radius: 5px; border: 2px solid #87E4E4;">
+					<span><h3>850</h3></span>
+					<label>Casos activos</label>
+				</button>
+			  </div> -->
+			</div>
+			
+
+		    <div class="table-responsive" style="height: 350px">
+		    	<table id="example" class="table table-bordered" style="width:100%">
+		        <thead>
+		            <tr>
+		                <th>Fecha</th>
+		                <th>Día</th>
+		                <th>Casos registrados</th>
+		                <th>Incremento diario</th>
+		            </tr>
+		        </thead>
+		        <tbody id="lista">
+		            
+		        </tbody>
+		    </table>
+		    </div>
+		</div>
+
+		<div class="col-md-6 col-sm-12">
+			<h5 class="text-center">Gráfica de casos confirmados, recuperados y muertes</h5>
+			<canvas id="myChart" width="400" height="400"></canvas>
+		</div>
+	</div>
+	<div class="row mt-5">
+		<div class="col-md-6 col-sm-12">
+			<h5 class="text-center">7 paises más infectados</h5>
+			<canvas id="myChart2" width="400" height="400"></canvas>
+		</div>
+	</div>
+</div>
+
+
+<script>
+	let f = new Date();
+	let fecha_actual_str = `${f.getFullYear()}-${f.getMonth()+1}-${f.getDate()}`;
+	let fecha_actual_milliseconds = Date.parse(f);
+	let fecha_actual_obj = f;
+
+	var meses = new Array ("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+	$('#fecha').text(`${f.getDate()} de ${meses[f.getMonth()]} del ${f.getFullYear()}`);
+
+	var myChart = {};//objeto globa para poder acceder desde donde
+
+	var DATA_GLOBAL = {};
+	$(function(){
+		//https://pomber.github.io/covid19/timeseries.json
+		fetch("timeseries.json")
+			.then(response => response.json())
+			.then(function(data) {
+		  		DATA_GLOBAL = data;
+		  		for (i in data) {
+		  			$('#paises').append(`<option value="${i}">${i.toUpperCase()}</option>`)
+		  		}
+		  		empezar('Peru', data);
+		  		openChart2(data);
+		});
+
+		$('select').change(function(event) {
+			myChart.destroy();
+			var pais = $(this).val();
+			$('#_pais_').html(pais.toUpperCase());
+			empezar(pais, DATA_GLOBAL );
+		});
+
+		function empezar(pais, data) {
+			// console.log('yupi',DATA_GLOBAL);
+
+		  	var i = 0;
+		  	var caso_registrado_anterior = 0;
+		  	var newData = [];
+		  	var data_de_pais = data[pais];
+
+		  	$('#lista').html('');
+		  	data_de_pais.forEach(({ date, confirmed, recovered, deaths }) => {
+
+		  		if (confirmed > 0) {
+		  			i++;
+		  			var incrementoDiario = confirmed - caso_registrado_anterior;
+		  			$('#lista').append(`<tr>
+			                <td>${date}</td>
+			                <td>${i}</td>
+			                <td>${confirmed}</td>
+			                <td>${incrementoDiario}</td>
+			            </tr>`);
+		  			caso_registrado_anterior = confirmed;
+
+		  			newData[i] = {
+			  			"date": date,
+			  			"confirmed": confirmed,
+			  			"recovered": recovered,
+			  			"deaths": deaths
+			  		}
+		  		}
+		  	});
+
+		  	// console.log(newData);
+			openChart(newData);
+		  	var objUltimoRegist = data_de_pais[data_de_pais.length-1];
+
+		  	$('#total_confirmados > button > span').text(objUltimoRegist.confirmed); //
+		  	$('#total_muertes > button > span').text(objUltimoRegist.deaths);
+		  	$('#total_recuperados > button > span').text(objUltimoRegist.recovered);
+		}
+	})
+
+
+function openChart(newData){
+	var i = 0;
+	var arrayDate = [];
+	var arrayCasoConfirmado = [];
+	var arrayRecovered = [];
+	var arrayDeaths = [];
+	newData.forEach( ({date, confirmed, recovered, deaths}) => {
+		i++;
+		
+		arrayDate.push(date);
+		arrayCasoConfirmado.push(confirmed);
+		arrayRecovered.push(recovered);
+		arrayDeaths.push(deaths);
+	} )
+
+	// console.log(arrayCasoConfirmado);
+
+	var ctx = document.getElementById('myChart');
+	myChart = new Chart(ctx, {
+	    type: 'line',
+	    data: {
+	        labels: arrayDate,
+	        datasets: [{
+	            label: '# casos confirmados',
+	            data: arrayCasoConfirmado,
+	            backgroundColor: [
+	                'rgba(255, 206, 86, 0.2)'
+	            ],
+	            borderColor: [
+	                'rgba(255, 206, 86, 1)'
+	            ],
+	            borderWidth: 2
+	        },
+	        {
+	            label: '# muertes',
+	            data: arrayDeaths,
+	            backgroundColor: [
+	                'rgba(255, 99, 132, 0.2)'
+	            ],
+	            borderColor: [
+	                'rgba(255, 99, 132, 1)'
+	            ],
+	            borderWidth: 2
+	        },{
+	            label: '# recuperados',
+	            data: arrayRecovered,
+	            backgroundColor: [
+	                'rgba(75, 192, 192, 0.2)'
+	            ],
+	            borderColor: [
+	                'rgba(75, 192, 192, 1)'
+	            ],
+	            borderWidth: 2
+	        }]
+	    },
+	    options: {
+	        scales: {
+	            yAxes: [{
+	                ticks: {
+	                    beginAtZero: true
+	                }
+	            }]
+	        },
+	        tooltips: {
+	        	// titleFontColor: 'rgba(75, 192, 192, 1)'
+	        }
+	    }
+	});
+
+}
+</script>
+
+
+<script>
+function openChart2(data) {
+	console.log(data);
+
+	// console.log(data['Peru'][data['Peru'].length-1]);
+
+	var i = 0;
+
+	var items = [];
+	for (pais in data) {
+		items[i] = data[pais][data[pais].length-1];
+		items[i]['pais'] = pais;
+		i++;
+	}
+
+	//para ordenar de mayor a menor
+	items.sort(function(a, b) {
+		if (a.confirmed < b.confirmed) {
+			return 1;
+		}
+		if (a.confirmed > b.confirmed) {
+	    	return -1;
+	  	}
+	  	return 0;
+	})
+
+	var top6Paises = [];
+	var top6Confirmed = [];
+	 for (j in items) {
+	 	if (j < 7) {
+	 		top6Paises.push(items[j].pais);
+	 		top6Confirmed.push(items[j].confirmed);
+	 	}
+	 }
+
+	console.log(top6Paises);
+	console.log(console.log(top6Paises));
+
+
+
+
+var ctx = document.getElementById('myChart2');
+var myChart2 = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: top6Paises,
+        datasets: [{
+            label: '# de infectados',
+            data: top6Confirmed,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+}
+</script>
+
+<footer class="text-center" style="padding: 30px;">
+	© 2020 Todo los derechos reservados <a href="https://twitter.com/MichaelDAbad" target="_black">Michael DAbad</a> desarrollador web. <a href="#">my05.abad@gmail.com</a>
+</footer>
+</body>
+</html>
