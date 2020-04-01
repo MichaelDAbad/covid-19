@@ -41,6 +41,20 @@
 			color: #50D8D8;
     	}
 
+
+        #total_activos > button{
+            background: #E6D9FF;
+            border: 2px solid #BB99FF;
+        }
+        #total_activos > button > span{
+            color: #BB99FF;
+            font-size: 30px;
+            font-weight: bold;
+        }
+        #total_activos > button > label{
+            color: #BB99FF;
+        }
+
     	#fecha{
     		color: #0099e5;
     	}

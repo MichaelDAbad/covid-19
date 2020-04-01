@@ -38,30 +38,30 @@
 		<div class="col-md-6 col-sm-12" >
 			<h5 class="text-center" id="_pais_">PERU</h5>
 			<div class="row mb-3">
-			  <div class="col-4 totales" id="total_confirmados">
+			  <div class="col-6 col-md-3 totales" id="total_confirmados">
 			  	<button>
 					<span>0</span>
 					<label>Total confirmados</label>
 				</button>
 			  </div>
-			  <div class="col-4 totales text-center" id="total_muertes">
+			  <div class="col-6 col-md-3 totales text-center" id="total_muertes">
 			  	<button>
 					<span>0</span>
 					<label>&nbsp;Total Muertes&nbsp;&nbsp;</label>
 				</button>
 			  </div>
-			  <div class="col-4 totales" id="total_recuperados">
+			  <div class="col-6 col-md-3 totales" id="total_recuperados">
 			  	<button>
 					<span>0</span>
 					<label>Total recuperados</label>
 				</button>
 			  </div>
-			  <!-- <div class="col-3 col-md-3">
-			  	<button style="background: #DBF2F2; border-radius: 5px; border: 2px solid #87E4E4;">
-					<span><h3>850</h3></span>
-					<label>Casos activos</label>
+			  <div class="col-6 col-md-3 totales" id="total_activos">
+			  	<button>
+					<span>0</span>
+					<label>Total activos</label>
 				</button>
-			  </div> -->
+			  </div>
 			</div>
 			
 
@@ -166,6 +166,7 @@
 		  	$('#total_confirmados > button > span').text(objUltimoRegist.confirmed); //
 		  	$('#total_muertes > button > span').text(objUltimoRegist.deaths);
 		  	$('#total_recuperados > button > span').text(objUltimoRegist.recovered);
+		  	$('#total_activos > button > span').text(objUltimoRegist.confirmed - objUltimoRegist.recovered);
 		}
 	})
 
@@ -176,6 +177,7 @@ function openChart(newData){
 	var arrayCasoConfirmado = [];
 	var arrayRecovered = [];
 	var arrayDeaths = [];
+	var arrayActives = [];
 	newData.forEach( ({date, confirmed, recovered, deaths}) => {
 		i++;
 		
@@ -183,6 +185,7 @@ function openChart(newData){
 		arrayCasoConfirmado.push(confirmed);
 		arrayRecovered.push(recovered);
 		arrayDeaths.push(deaths);
+		arrayActives.push(confirmed - recovered);
 	} )
 
 	// console.log(arrayCasoConfirmado);
@@ -221,6 +224,17 @@ function openChart(newData){
 	            ],
 	            borderColor: [
 	                'rgba(75, 192, 192, 1)'
+	            ],
+	            borderWidth: 2
+	        },
+	        {
+	            label: '# Activos',
+	            data: arrayActives,
+	            backgroundColor: [
+	                'rgba(153, 102, 255, 0.2)'
+	            ],
+	            borderColor: [
+	                'rgba(153, 102, 255, 1)'
 	            ],
 	            borderWidth: 2
 	        }]
