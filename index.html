@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>COVID-19 EN EL MUNDO BASADO EN CASOS CONFIRMADOS</title>
 
     <script type="text/javascript" src="resources/js/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -15,28 +15,30 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
+	<script src="https://kit.fontawesome.com/bfaa0bf010.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="resources/css/styles.css">
 </head>
 <body>
 <div class="container mt-3" style="border: 1px solid #CDEBFF; border-radius: 10px;">
-	<select name="paises" id="paises">
-		<option value="Peru" selected="">PERU</option>
-		<option value="Chile">CHILE</option>
-		<option value="Argentina">ARGENTINA</option>
-		<option value="Ecuador">ECUADOR</option>
-		<option value="Colombia">COLOMBIA</option>
-		<option value="Brazil">BRAZIL</option>
-		<option value="Bolivia">BOLIVIA</option>
-		<option value="Paraguay">PARAGUAY</option>
-		<option value="Uruguay">URUGUAY</option>
-	</select>
 	<div class="h4 text-info text-center">
 		COVID-19 EN EL MUNDO BASADO EN CASOS CONFIRMADOS<br>
 		<span id="fecha"> </span>
 	</div>
 	<div class="row mt-4">
 		<div class="col-md-6 col-sm-12" >
-			<h5 class="text-center" id="_pais_">PERU</h5>
+			<select name="paises" id="paises" class="form-control">
+				<option value="Peru" selected="">PERU</option>
+				<option value="Chile">CHILE</option>
+				<option value="Argentina">ARGENTINA</option>
+				<option value="Ecuador">ECUADOR</option>
+				<option value="Colombia">COLOMBIA</option>
+				<option value="Brazil">BRAZIL</option>
+				<option value="Bolivia">BOLIVIA</option>
+				<option value="Paraguay">PARAGUAY</option>
+				<option value="Uruguay">URUGUAY</option>
+			</select>
+					
+			<h5 class="text-center m-3" id="_pais_">PERU</h5>
 			<div class="row mb-3">
 			  <div class="col-6 col-md-3 totales" id="total_confirmados">
 			  	<button>
@@ -339,7 +341,7 @@ var myChart2 = new Chart(ctx, {
 </script>
 
 <footer class="text-center" style="padding: 30px;">
-	© 2020 Todo los derechos reservados <a href="https://twitter.com/MichaelDAbad" target="_black">Michael DAbad</a> desarrollador web. <a href="#">my05.abad@gmail.com</a>
+	© 2020 Todo los derechos reservados <i class="fab fa-twitter"></i><a href="https://twitter.com/MichaelDAbad" target="_black">@MichaelDAbad</a> desarrollador de software. <i class="fas fa-envelope"></i><a href="#"> my05.abad@gmail.com</a><br><i class="fab fa-github"></i><a href="https://github.com/michaeldabad" target="_blanck"> GitHub</a>
 </footer>
 </body>
 </html>
